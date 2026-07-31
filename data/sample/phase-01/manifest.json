@@ -1,0 +1,64 @@
+{
+  "date_range": {
+    "end": "2024-03-31",
+    "start": "2024-01-01"
+  },
+  "generated_batch_id": "batch-42-2024-01-01-2024-03-31-25",
+  "generation_timestamp": "2026-07-31T00:02:20.858116Z",
+  "invalid_record_count": 0,
+  "output_filenames": {
+    "agents": {
+      "csv": "agents.csv",
+      "json": "agents.json",
+      "parquet": "agents.parquet"
+    },
+    "categories": {
+      "csv": "categories.csv",
+      "json": "categories.json",
+      "parquet": "categories.parquet"
+    },
+    "customers": {
+      "csv": "customers.csv",
+      "json": "customers.json",
+      "parquet": "customers.parquet"
+    },
+    "sla_rules": {
+      "csv": "sla_rules.csv",
+      "json": "sla_rules.json",
+      "parquet": "sla_rules.parquet"
+    },
+    "subcategories": {
+      "csv": "subcategories.csv",
+      "json": "subcategories.json",
+      "parquet": "subcategories.parquet"
+    },
+    "teams": {
+      "csv": "teams.csv",
+      "json": "teams.json",
+      "parquet": "teams.parquet"
+    },
+    "ticket_status_history": {
+      "csv": "ticket_status_history.csv",
+      "json": "ticket_status_history.json",
+      "parquet": "ticket_status_history.parquet"
+    },
+    "tickets": {
+      "csv": "tickets.csv",
+      "json": "tickets.json",
+      "parquet": "tickets.parquet"
+    }
+  },
+  "random_seed": 42,
+  "record_counts": {
+    "agents": 12,
+    "categories": 4,
+    "customers": 4,
+    "sla_rules": 4,
+    "subcategories": 8,
+    "teams": 4,
+    "ticket_status_history": 108,
+    "tickets": 25
+  },
+  "reproducibility_checksum": "1976bafeac035b679e0fab639ae5fc8bb420c5e0c4ca5039431c6a6b04f49e05",
+  "schema_version": "1.0"
+}

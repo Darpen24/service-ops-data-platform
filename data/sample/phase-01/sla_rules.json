@@ -1,0 +1,22 @@
+[
+  {
+    "priority": "P1",
+    "sla_rule_id": "sla-p1",
+    "target_hours": 4
+  },
+  {
+    "priority": "P2",
+    "sla_rule_id": "sla-p2",
+    "target_hours": 8
+  },
+  {
+    "priority": "P3",
+    "sla_rule_id": "sla-p3",
+    "target_hours": 24
+  },
+  {
+    "priority": "P4",
+    "sla_rule_id": "sla-p4",
+    "target_hours": 72
+  }
+]

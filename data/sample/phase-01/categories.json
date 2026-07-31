@@ -1,0 +1,18 @@
+[
+  {
+    "category_id": "cat-access",
+    "category_name": "Access"
+  },
+  {
+    "category_id": "cat-hardware",
+    "category_name": "Hardware"
+  },
+  {
+    "category_id": "cat-network",
+    "category_name": "Network"
+  },
+  {
+    "category_id": "cat-application",
+    "category_name": "Application"
+  }
+]

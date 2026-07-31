@@ -1,0 +1,13 @@
+agent_id,agent_name,team_id
+agent-001,Agent 001,team-app
+agent-002,Agent 002,team-app
+agent-003,Agent 003,team-app
+agent-004,Agent 004,team-network
+agent-005,Agent 005,team-network
+agent-006,Agent 006,team-network
+agent-007,Agent 007,team-workplace
+agent-008,Agent 008,team-workplace
+agent-009,Agent 009,team-workplace
+agent-010,Agent 010,team-identity
+agent-011,Agent 011,team-identity
+agent-012,Agent 012,team-identity

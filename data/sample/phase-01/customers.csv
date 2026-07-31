@@ -1,0 +1,5 @@
+customer_id,customer_name,business_unit,region
+customer-fin,Finance,Finance,DE
+customer-ops,Operations,Operations,DE
+customer-sales,Sales,Sales,EU
+customer-rnd,Research and Development,R&D,EU

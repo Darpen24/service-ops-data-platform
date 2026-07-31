@@ -1,0 +1,22 @@
+[
+  {
+    "region": "DE",
+    "team_id": "team-app",
+    "team_name": "Application Support"
+  },
+  {
+    "region": "DE",
+    "team_id": "team-network",
+    "team_name": "Network Operations"
+  },
+  {
+    "region": "EU",
+    "team_id": "team-workplace",
+    "team_name": "Workplace Services"
+  },
+  {
+    "region": "EU",
+    "team_id": "team-identity",
+    "team_name": "Identity Services"
+  }
+]

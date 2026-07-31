@@ -1,0 +1,26 @@
+[
+  {
+    "business_unit": "Finance",
+    "customer_id": "customer-fin",
+    "customer_name": "Finance",
+    "region": "DE"
+  },
+  {
+    "business_unit": "Operations",
+    "customer_id": "customer-ops",
+    "customer_name": "Operations",
+    "region": "DE"
+  },
+  {
+    "business_unit": "Sales",
+    "customer_id": "customer-sales",
+    "customer_name": "Sales",
+    "region": "EU"
+  },
+  {
+    "business_unit": "R&D",
+    "customer_id": "customer-rnd",
+    "customer_name": "Research and Development",
+    "region": "EU"
+  }
+]

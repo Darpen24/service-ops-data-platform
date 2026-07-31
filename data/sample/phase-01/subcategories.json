@@ -1,0 +1,42 @@
+[
+  {
+    "category_id": "cat-access",
+    "subcategory_id": "sub-password",
+    "subcategory_name": "Password reset"
+  },
+  {
+    "category_id": "cat-access",
+    "subcategory_id": "sub-vpn",
+    "subcategory_name": "VPN access"
+  },
+  {
+    "category_id": "cat-hardware",
+    "subcategory_id": "sub-laptop",
+    "subcategory_name": "Laptop issue"
+  },
+  {
+    "category_id": "cat-hardware",
+    "subcategory_id": "sub-printer",
+    "subcategory_name": "Printer issue"
+  },
+  {
+    "category_id": "cat-network",
+    "subcategory_id": "sub-wifi",
+    "subcategory_name": "Wi-Fi connectivity"
+  },
+  {
+    "category_id": "cat-network",
+    "subcategory_id": "sub-lan",
+    "subcategory_name": "LAN connectivity"
+  },
+  {
+    "category_id": "cat-application",
+    "subcategory_id": "sub-erp",
+    "subcategory_name": "ERP support"
+  },
+  {
+    "category_id": "cat-application",
+    "subcategory_id": "sub-collaboration",
+    "subcategory_name": "Collaboration tools"
+  }
+]

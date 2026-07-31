@@ -28,12 +28,12 @@ Python 3.12, PostgreSQL, SQL, Docker Compose, dbt Core, GitHub Actions, Snowflak
 
 ## Current status
 
-Phase 0 — Project Foundation — is the current implementation. It provides repository conventions, Python tooling, a minimal package and test, PostgreSQL Compose configuration, and documentation. No synthetic data, business tables, dbt models, cloud resources, Airflow, or Power BI artifacts exist yet.
+Phases 0 and 1 are implemented. Phase 1 adds deterministic synthetic service-management source data, JSON/CSV/Snappy Parquet writers, a manifest, independent validation, a small committed sample, and explicit separate defect examples. PostgreSQL business tables, dbt models, cloud resources, Airflow, and Power BI artifacts are not implemented.
 
 | Phase | Scope | Status |
 | --- | --- | --- |
 | 0 | Project foundation | Complete |
-| 1 | Synthetic data generation | Not started |
+| 1 | Synthetic data generation and Parquet | Complete |
 | 2 | PostgreSQL and SQL | Not started |
 | 3 | ETL, ELT, and data quality | Not started |
 | 4 | dbt | Not started |
@@ -87,13 +87,30 @@ cp .env.example .env
 
 `scripts/check.ps1 -WithDocker` runs the PowerShell checks plus the Docker lifecycle. Docker uses `.env` when started directly; copy `.env.example` first and replace its local-only password.
 
+## Phase 1 generation
+
+```bash
+# Small reviewable sample (already committed under data/sample/phase-01)
+python -m service_ops generate --count 25 --seed 42 --output-directory data/sample/phase-01
+
+# Larger ignored source data
+python -m service_ops generate --count 1000 --seed 42 --output-directory data/raw/phase-01
+
+# Explicit invalid examples are written separately as invalid_tickets.json
+python -m service_ops generate --count 1000 --seed 42 --inject-defects --defect-rate 0.05
+
+python -m service_ops validate-sample
+```
+
+The generator emits teams, agents, customers, categories, subcategories, SLA rules, tickets, ticket status history, and `manifest.json` in JSON, CSV, and Snappy Parquet. See `docs/data_dictionary/phase-01-source-data.md` for relationships and fields.
+
 ## Cost strategy
 
 Phase 0 uses only local, open-source tooling. Future cloud and paid services remain optional, are documented separately, and will never be provisioned without explicit approval.
 
 ## Known limitations
 
-- No data generation, ingestion, schema, transformations, analytics, CI workflow, or dashboard is implemented yet.
+- No PostgreSQL business schema, ingestion, transformations, analytics, CI workflow, or dashboard is implemented yet.
 - Snowflake, Databricks, and Power BI are not yet implemented.
 - The Compose service uses a local-development password from `.env`; production secret management is intentionally out of scope for Phase 0.
 - This workstation does not have a native Python 3.12 interpreter; Phase 0 Python checks were executed successfully in an isolated Python 3.12 container.

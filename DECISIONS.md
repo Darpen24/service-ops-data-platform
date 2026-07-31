@@ -65,3 +65,15 @@
 **Decision:** Expose one dependency-free status function and its test only.
 
 **Rationale:** It proves packaging and validation without prematurely implementing future business logic.
+
+## ADR-012: Use deterministic source generation with separate defect output
+
+**Decision:** Generate clean, related source records from a seed and write optional invalid ticket copies separately.
+
+**Rationale:** The default source set remains trustworthy and reproducible, while later data-quality phases have explicit, documented malformed examples to process.
+
+## ADR-013: Publish JSON, CSV, and Snappy Parquet source formats
+
+**Decision:** Write each generated dataset to readable JSON/CSV and Snappy-compressed Parquet, with a manifest checksum.
+
+**Rationale:** JSON and CSV make source inspection and simple interchange easy; Parquet provides the columnar, compressed format needed by later analytical workflows. The manifest captures reproducibility and file inventory without committing larger generated output.

@@ -12,6 +12,6 @@ Before changing this repository, read `PLANS.md`, `DECISIONS.md`, and `IMPLEMENT
 - Preserve backward compatibility unless the current plan explicitly changes it.
 - Keep functions small, typed, testable, and free of business logic not planned for the current phase.
 
-## Phase boundary
+## Current phase boundary
 
-Phase 0 establishes local tooling and documentation only. It must not add synthetic data, business database tables, dbt models, cloud infrastructure, Airflow, or Power BI artifacts.
+Phase 1 may implement deterministic synthetic source data and Parquet only. Do not add PostgreSQL business tables, SQL analytics, ETL/ELT, dbt, CI/CD, cloud infrastructure, Airflow, or Power BI artifacts until their planned phases.

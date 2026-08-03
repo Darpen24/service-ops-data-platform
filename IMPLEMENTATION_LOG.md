@@ -70,3 +70,45 @@ No synthetic data, database business objects, dbt models, CI workflow, cloud imp
 ### Recommended next step
 
 Install Python 3.12 for native Windows use, review and approve the Phase 0 foundation, then begin Phase 1 only after that approval.
+
+## 2026-07-31 — Phase 1: Python synthetic data and Parquet
+
+### Completed work
+
+- Added deterministic generation of teams, agents, customers, categories, subcategories, SLA rules, tickets, and ticket status history.
+- Added JSON, CSV, and Snappy-compressed Parquet writers, a manifest/checksum, `argparse` commands, and independent data validation.
+- Added an explicit defect mode that writes invalid ticket copies separately; default output remains clean.
+- Added a committed 25-ticket sample and ignored larger validation outputs.
+
+### Important files
+
+`src/service_ops/generation/`, `src/service_ops/__main__.py`, `tests/unit/test_generation.py`, `tests/integration/test_output_formats.py`, `data/sample/phase-01/`, `docs/data_dictionary/phase-01-source-data.md`, and `docs/learning/phase-01-python-parquet.md`.
+
+### Commands executed and exact results
+
+- Python 3.12.13 container package installation: passed.
+- `pytest`: `9 passed in 1.05s`.
+- `pytest --cov=service_ops --cov-report=term-missing`: `9 passed in 2.17s`; total coverage `77%`.
+- `ruff format --check .`: `27 files already formatted`.
+- `ruff check .`: `All checks passed!`.
+- `mypy src`: `Success: no issues found in 8 source files`.
+- Small generation: 25 tickets, 108 status-history records, 12 agents, 4 teams, 4 customers, 4 categories, 8 subcategories, and 4 SLA rules; clean validation passed.
+- Temporary larger generation: 250 tickets and 1,082 status-history records; clean validation passed.
+- Defect validation: 6 explicitly injected records produced `overall_result=fail` when combined with clean tickets; the clean source files remained valid.
+- JSON, CSV, and Parquet round trips: passed in `tests/integration/test_output_formats.py` for every dataset.
+- Git ignore check: `data/raw/phase-01-validation/tickets.parquet` and `data/raw/phase-01-defects/invalid_tickets.json` are ignored by `data/raw/*`.
+
+### Decisions and known limitations
+
+See ADR-012 and ADR-013. The sample models realistic but deliberately compact support operations. CSV round trips preserve schema and row count but values are strings when read with the standard library; typed analytical consumers should use Parquet. Native host validation remains blocked until Python 3.12 is installed; all Phase 1 checks ran in an isolated Python 3.12.13 container.
+
+### Recommended next step
+
+Review Phase 1 and begin PostgreSQL business schemas only in Phase 2 after approval.
+
+### Phase 1 lifecycle correction — 2026-08-03
+
+- Replaced history's final `updated_at` use with explicit `in_progress_at` and regenerated the committed sample.
+- Extended independent ticket/history validation for full chronological transitions, continuous sequences, final status consistency, unresolved null handling, manifest checks, and corrupted/reordered history detection.
+- Final validation: `13 passed in 2.35s`; coverage `79%`; Ruff formatting/lint and mypy passed. Ruff format initially reported two new test files and was corrected before final rerun.
+- Committed-sample validation read Parquet files under `data/sample/phase-01/`, matched all manifest counts and checksum `13563ac43159119f0ada365c208b3585aed69ebcbec919cee5a90c30dce2d683`, and returned `overall_result=pass`.

@@ -1,0 +1,62 @@
+[
+  {
+    "agent_id": "agent-001",
+    "agent_name": "Agent 001",
+    "team_id": "team-app"
+  },
+  {
+    "agent_id": "agent-002",
+    "agent_name": "Agent 002",
+    "team_id": "team-app"
+  },
+  {
+    "agent_id": "agent-003",
+    "agent_name": "Agent 003",
+    "team_id": "team-app"
+  },
+  {
+    "agent_id": "agent-004",
+    "agent_name": "Agent 004",
+    "team_id": "team-network"
+  },
+  {
+    "agent_id": "agent-005",
+    "agent_name": "Agent 005",
+    "team_id": "team-network"
+  },
+  {
+    "agent_id": "agent-006",
+    "agent_name": "Agent 006",
+    "team_id": "team-network"
+  },
+  {
+    "agent_id": "agent-007",
+    "agent_name": "Agent 007",
+    "team_id": "team-workplace"
+  },
+  {
+    "agent_id": "agent-008",
+    "agent_name": "Agent 008",
+    "team_id": "team-workplace"
+  },
+  {
+    "agent_id": "agent-009",
+    "agent_name": "Agent 009",
+    "team_id": "team-workplace"
+  },
+  {
+    "agent_id": "agent-010",
+    "agent_name": "Agent 010",
+    "team_id": "team-identity"
+  },
+  {
+    "agent_id": "agent-011",
+    "agent_name": "Agent 011",
+    "team_id": "team-identity"
+  },
+  {
+    "agent_id": "agent-012",
+    "agent_name": "Agent 012",
+    "team_id": "team-identity"
+  }
+]

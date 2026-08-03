@@ -1,0 +1,9 @@
+subcategory_id,subcategory_name,category_id
+sub-password,Password reset,cat-access
+sub-vpn,VPN access,cat-access
+sub-laptop,Laptop issue,cat-hardware
+sub-printer,Printer issue,cat-hardware
+sub-wifi,Wi-Fi connectivity,cat-network
+sub-lan,LAN connectivity,cat-network
+sub-erp,ERP support,cat-application
+sub-collaboration,Collaboration tools,cat-application

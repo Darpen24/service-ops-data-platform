@@ -1,0 +1,5 @@
+sla_rule_id,priority,target_hours
+sla-p1,P1,4
+sla-p2,P2,8
+sla-p3,P3,24
+sla-p4,P4,72

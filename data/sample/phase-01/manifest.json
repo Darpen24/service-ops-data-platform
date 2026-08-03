@@ -4,7 +4,7 @@
     "start": "2024-01-01"
   },
   "generated_batch_id": "batch-42-2024-01-01-2024-03-31-25",
-  "generation_timestamp": "2026-07-31T00:02:20.858116Z",
+  "generation_timestamp": "2026-08-03T10:57:35.863177Z",
   "invalid_record_count": 0,
   "output_filenames": {
     "agents": {
@@ -56,9 +56,9 @@
     "sla_rules": 4,
     "subcategories": 8,
     "teams": 4,
-    "ticket_status_history": 108,
+    "ticket_status_history": 110,
     "tickets": 25
   },
-  "reproducibility_checksum": "1976bafeac035b679e0fab639ae5fc8bb420c5e0c4ca5039431c6a6b04f49e05",
+  "reproducibility_checksum": "13563ac43159119f0ada365c208b3585aed69ebcbec919cee5a90c30dce2d683",
   "schema_version": "1.0"
 }

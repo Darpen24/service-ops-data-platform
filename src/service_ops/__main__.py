@@ -11,7 +11,7 @@ from pathlib import Path
 
 from service_ops.generation.config import DEFAULT_FORMATS, GenerationConfig
 from service_ops.generation.generator import generate_dataset
-from service_ops.generation.io import write_dataset
+from service_ops.generation.io import read_committed_sample, write_dataset
 from service_ops.generation.validation import validate_dataset
 
 
@@ -51,10 +51,9 @@ def _generate(args: argparse.Namespace) -> int:
 
 
 def _validate_sample(_: argparse.Namespace) -> int:
-    config = GenerationConfig(ticket_count=25, output_directory=Path("data/sample/phase-01"))
-    dataset = generate_dataset(config)
-    summary = validate_dataset(dataset.records)
-    print(json.dumps(summary, indent=2, sort_keys=True))
+    records, manifest = read_committed_sample(Path("data/sample/phase-01"))
+    summary = validate_dataset(records)
+    print(json.dumps({"manifest": manifest, "validation": summary}, indent=2, sort_keys=True))
     return 0 if summary["overall_result"] == "pass" else 1
 
 

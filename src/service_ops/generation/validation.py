@@ -61,6 +61,7 @@ def validate_dataset(records: Dataset) -> dict[str, Any]:
     customer_ids = {row["customer_id"] for row in records["customers"]}
     sla_targets = {row["priority"]: row["target_hours"] for row in records["sla_rules"]}
     ticket_ids = {row["ticket_id"] for row in records["tickets"]}
+    history_by_ticket: dict[str, list[Record]] = {ticket_id: [] for ticket_id in ticket_ids}
 
     for agent in records["agents"]:
         if agent["team_id"] not in team_ids:
@@ -91,17 +92,32 @@ def validate_dataset(records: Dataset) -> dict[str, Any]:
         created = _parse_timestamp(ticket.get("created_at"))
         response = _parse_timestamp(ticket.get("first_response_at"))
         updated = _parse_timestamp(ticket.get("updated_at"))
+        in_progress = _parse_timestamp(ticket.get("in_progress_at"))
         resolved = (
             _parse_timestamp(ticket.get("resolved_at")) if ticket.get("resolved_at") else None
         )
         closed = _parse_timestamp(ticket.get("closed_at")) if ticket.get("closed_at") else None
-        valid_lifecycle = False
-        if created is not None and response is not None and updated is not None:
-            valid_lifecycle = created <= response <= updated
-        if resolved is not None and created is not None:
-            valid_lifecycle = valid_lifecycle and created <= resolved <= (closed or resolved)
-        if closed:
+        valid_lifecycle = bool(
+            created is not None
+            and response is not None
+            and in_progress is not None
+            and updated is not None
+            and created <= response <= in_progress
+        )
+        latest_event = in_progress
+        if resolved is not None and in_progress is not None:
+            valid_lifecycle = valid_lifecycle and in_progress <= resolved
+            latest_event = resolved
+        if closed is not None:
             valid_lifecycle = valid_lifecycle and resolved is not None and resolved <= closed
+            latest_event = closed
+        if updated is not None and latest_event is not None:
+            valid_lifecycle = valid_lifecycle and updated >= latest_event
+        if resolved is None:
+            valid_lifecycle = valid_lifecycle and all(
+                ticket.get(field) is None
+                for field in ("closed_at", "resolution_minutes", "satisfaction_score")
+            )
         if ticket.get("resolution_minutes") is not None and int(ticket["resolution_minutes"]) < 0:
             valid_lifecycle = False
         if not valid_lifecycle:
@@ -110,7 +126,34 @@ def validate_dataset(records: Dataset) -> dict[str, Any]:
         event_summary = summaries["ticket_status_history"]
         if event.get("ticket_id") not in ticket_ids:
             event_summary["referential_integrity_failures"] += 1
+        else:
+            history_by_ticket[str(event["ticket_id"])].append(event)
         if event.get("status") not in STATUSES or _parse_timestamp(event.get("changed_at")) is None:
+            event_summary["invalid_value_count"] += 1
+    for ticket in records["tickets"]:
+        ticket_id = str(ticket["ticket_id"])
+        events = sorted(
+            history_by_ticket[ticket_id], key=lambda event: int(event.get("sequence", 0))
+        )
+        expected_statuses = ["new", "assigned", "in_progress"]
+        if ticket.get("resolved_at") is not None:
+            expected_statuses.append("resolved")
+        if ticket.get("closed_at") is not None:
+            expected_statuses.append("closed")
+        event_summary = summaries["ticket_status_history"]
+        sequences = [event.get("sequence") for event in events]
+        statuses = [event.get("status") for event in events]
+        times = [_parse_timestamp(event.get("changed_at")) for event in events]
+        if sequences != list(range(1, len(events) + 1)):
+            event_summary["invalid_value_count"] += 1
+        if statuses != expected_statuses:
+            event_summary["invalid_value_count"] += 1
+        if any(time is None for time in times) or any(
+            earlier is not None and later is not None and earlier > later
+            for earlier, later in zip(times, times[1:], strict=False)
+        ):
+            event_summary["timestamp_failures"] += 1
+        if not events or events[-1].get("status") != ticket.get("status"):
             event_summary["invalid_value_count"] += 1
     overall_result = all(
         summary[metric] == 0

@@ -105,3 +105,10 @@ See ADR-012 and ADR-013. The sample models realistic but deliberately compact su
 ### Recommended next step
 
 Review Phase 1 and begin PostgreSQL business schemas only in Phase 2 after approval.
+
+### Phase 1 lifecycle correction — 2026-08-03
+
+- Replaced history's final `updated_at` use with explicit `in_progress_at` and regenerated the committed sample.
+- Extended independent ticket/history validation for full chronological transitions, continuous sequences, final status consistency, unresolved null handling, manifest checks, and corrupted/reordered history detection.
+- Final validation: `13 passed in 2.35s`; coverage `79%`; Ruff formatting/lint and mypy passed. Ruff format initially reported two new test files and was corrected before final rerun.
+- Committed-sample validation read Parquet files under `data/sample/phase-01/`, matched all manifest counts and checksum `13563ac43159119f0ada365c208b3585aed69ebcbec919cee5a90c30dce2d683`, and returned `overall_result=pass`.

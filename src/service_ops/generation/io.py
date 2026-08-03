@@ -16,6 +16,16 @@ from service_ops.generation.config import GenerationConfig
 from service_ops.generation.generator import Dataset, GeneratedDataset
 
 Record = dict[str, Any]
+REQUIRED_DATASETS = (
+    "teams",
+    "agents",
+    "customers",
+    "categories",
+    "subcategories",
+    "sla_rules",
+    "tickets",
+    "ticket_status_history",
+)
 
 
 def _normalise(value: Any) -> Any:
@@ -91,3 +101,25 @@ def read_rows(path: Path) -> list[Record]:
     if path.suffix == ".parquet":
         return cast(list[Record], pq.read_table(path).to_pylist())
     raise ValueError(f"Unsupported generated file: {path}")
+
+
+def read_committed_sample(directory: Path) -> tuple[Dataset, dict[str, Any]]:
+    """Read and verify the committed typed Parquet sample and its manifest."""
+    manifest_path = directory / "manifest.json"
+    if not manifest_path.is_file():
+        raise ValueError(f"Missing sample manifest: {manifest_path}")
+    manifest = cast(dict[str, Any], json.loads(manifest_path.read_text(encoding="utf-8")))
+    records: Dataset = {}
+    for name in REQUIRED_DATASETS:
+        path = directory / f"{name}.parquet"
+        if not path.is_file():
+            raise ValueError(f"Missing sample dataset: {path}")
+        records[name] = read_rows(path)
+    record_counts = manifest.get("record_counts")
+    if not isinstance(record_counts, dict) or any(
+        record_counts.get(name) != len(records[name]) for name in REQUIRED_DATASETS
+    ):
+        raise ValueError("Sample manifest record counts do not match Parquet files")
+    if manifest.get("reproducibility_checksum") != record_checksum(records):
+        raise ValueError("Sample manifest reproducibility checksum does not match Parquet files")
+    return records, manifest

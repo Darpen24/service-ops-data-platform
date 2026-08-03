@@ -176,10 +176,11 @@ def _build_ticket(
     first_response_minutes = rng.randint(5, max(10, target_hours * 35))
     first_response_at = created_at + timedelta(minutes=first_response_minutes)
     unresolved = rng.random() < 0.14
+    in_progress_at: datetime
     resolution_minutes: int | None = None
     resolved_at: datetime | None = None
     closed_at: datetime | None = None
-    status = rng.choices(("new", "assigned", "in_progress"), weights=(1, 2, 5), k=1)[0]
+    status = "in_progress"
     if not unresolved:
         category_factor = {
             "cat-access": 0.65,
@@ -195,7 +196,7 @@ def _build_ticket(
         }[team["team_id"]]
         priority_factor = {"P1": 0.35, "P2": 0.55, "P3": 1.0, "P4": 1.45}[priority]
         resolution_minutes = max(
-            15,
+            first_response_minutes + 15,
             int(
                 target_hours
                 * 60
@@ -206,9 +207,14 @@ def _build_ticket(
             ),
         )
         resolved_at = created_at + timedelta(minutes=resolution_minutes)
+        in_progress_at = first_response_at + timedelta(
+            minutes=max(1, (resolution_minutes - first_response_minutes) // 2)
+        )
         status = "closed" if rng.random() < 0.55 else "resolved"
         if status == "closed":
             closed_at = resolved_at + timedelta(hours=rng.randint(1, 48))
+    else:
+        in_progress_at = first_response_at + timedelta(minutes=rng.randint(5, 120))
     reopened_count = 1 if resolved_at and rng.random() < 0.11 else 0
     escalation_count = 1 if priority in {"P1", "P2"} and rng.random() < 0.26 else 0
     breached = resolution_minutes is not None and resolution_minutes > target_hours * 60
@@ -227,15 +233,14 @@ def _build_ticket(
             ),
         )
     )
-    updated_at = (
-        closed_at or resolved_at or (first_response_at + timedelta(hours=rng.randint(1, 48)))
-    )
+    updated_at = closed_at or resolved_at or (in_progress_at + timedelta(hours=rng.randint(1, 48)))
     return {
         "ticket_id": f"ticket-{ticket_index:06d}",
         "ticket_type": "incident" if rng.random() < 0.62 else "service_request",
         "created_at": _iso(created_at),
         "updated_at": _iso(updated_at),
         "first_response_at": _iso(first_response_at),
+        "in_progress_at": _iso(in_progress_at),
         "resolved_at": _iso(resolved_at),
         "closed_at": _iso(closed_at),
         "priority": priority,
@@ -272,7 +277,7 @@ def _status_history(tickets: list[Record]) -> list[Record]:
         states = [
             ("new", event_time),
             ("assigned", ticket["first_response_at"]),
-            ("in_progress", ticket["updated_at"]),
+            ("in_progress", ticket["in_progress_at"]),
         ]
         if ticket["resolved_at"]:
             states.append(("resolved", ticket["resolved_at"]))
@@ -311,7 +316,8 @@ def _inject_defects(records: Dataset, rng: random.Random, defect_rate: float) ->
         elif kind == "invalid_priority":
             copy["priority"] = "P0"
         elif kind == "reversed_timestamp":
-            copy["resolved_at"] = "2023-12-31T00:00:00Z"
+            created_at = datetime.fromisoformat(str(ticket["created_at"]).replace("Z", "+00:00"))
+            copy["resolved_at"] = _iso(created_at - timedelta(minutes=1))
         elif kind == "duplicate_ticket_id":
             copy["ticket_id"] = records["tickets"][0]["ticket_id"]
         elif kind == "unknown_category":

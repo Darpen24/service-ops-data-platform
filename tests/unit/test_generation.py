@@ -8,6 +8,7 @@ import pytest
 
 from service_ops.generation.config import GenerationConfig
 from service_ops.generation.generator import generate_dataset
+from service_ops.generation.io import record_checksum
 from service_ops.generation.validation import validate_dataset
 
 
@@ -19,7 +20,17 @@ def config(tmp_path: Path) -> GenerationConfig:
 
 def test_generation_is_deterministic(config: GenerationConfig) -> None:
     """Equal configuration produces equal clean records and checksums."""
-    assert generate_dataset(config).records == generate_dataset(config).records
+    first = generate_dataset(config).records
+    second = generate_dataset(config).records
+    assert first == second
+    assert record_checksum(first) == record_checksum(second)
+
+
+def test_different_seed_changes_checksum(config: GenerationConfig) -> None:
+    """Changing the deterministic seed normally changes generated source records."""
+    assert record_checksum(generate_dataset(config).records) != record_checksum(
+        generate_dataset(replace(config, seed=99)).records
+    )
 
 
 def test_requested_record_count_and_clean_validation(config: GenerationConfig) -> None:
@@ -66,6 +77,44 @@ def test_ticket_business_rules(config: GenerationConfig) -> None:
         for ticket in tickets
     )
     assert validate_dataset(generate_dataset(config).records)["overall_result"] == "pass"
+
+
+def test_status_history_is_chronological_and_matches_ticket_status(
+    config: GenerationConfig,
+) -> None:
+    """Every generated ticket has continuous lifecycle sequences and matching final status."""
+    generated = generate_dataset(config).records
+    tickets = {row["ticket_id"]: row for row in generated["tickets"]}
+    history: dict[str, list[dict[str, object]]] = {}
+    for event in generated["ticket_status_history"]:
+        history.setdefault(str(event["ticket_id"]), []).append(event)
+    for ticket_id, events in history.items():
+        ordered = sorted(events, key=lambda event: int(event["sequence"]))
+        assert [event["sequence"] for event in ordered] == list(range(1, len(ordered) + 1))
+        assert [event["status"] for event in ordered][:3] == ["new", "assigned", "in_progress"]
+        assert ordered[-1]["status"] == tickets[ticket_id]["status"]
+        assert [event["changed_at"] for event in ordered] == sorted(
+            event["changed_at"] for event in ordered
+        )
+
+
+def test_reordered_or_invalid_status_history_fails_validation(config: GenerationConfig) -> None:
+    """Independent history validation rejects reordered timestamps and invalid transitions."""
+    records = generate_dataset(config).records
+    reordered = {name: [dict(row) for row in rows] for name, rows in records.items()}
+    first_ticket_events = [
+        event
+        for event in reordered["ticket_status_history"]
+        if event["ticket_id"] == "ticket-000001"
+    ]
+    first_ticket_events[1]["changed_at"], first_ticket_events[2]["changed_at"] = (
+        first_ticket_events[2]["changed_at"],
+        first_ticket_events[1]["changed_at"],
+    )
+    assert validate_dataset(reordered)["overall_result"] == "fail"
+    invalid_transition = {name: [dict(row) for row in rows] for name, rows in records.items()}
+    invalid_transition["ticket_status_history"][1]["status"] = "closed"
+    assert validate_dataset(invalid_transition)["overall_result"] == "fail"
 
 
 def test_explicit_defect_injection_is_separate(config: GenerationConfig) -> None:

@@ -15,9 +15,11 @@ All timestamps are ISO 8601 UTC strings. IDs are stable strings. The committed s
 
 ## Tickets
 
-`ticket_id`, `ticket_type`, `created_at`, `updated_at`, `first_response_at`, `resolved_at`, `closed_at`, `priority`, `impact`, `urgency`, `category_id`, `subcategory_id`, `assigned_team_id`, `assigned_agent_id`, `customer_id`, `business_unit`, `region`, `channel`, `status`, `sla_target_hours`, `first_response_minutes`, `resolution_minutes`, `reopened_count`, `escalation_count`, `satisfaction_score`, `short_description`, `source_system`, and `generated_batch_id`.
+`ticket_id`, `ticket_type`, `created_at`, `updated_at`, `first_response_at`, `in_progress_at`, `resolved_at`, `closed_at`, `priority`, `impact`, `urgency`, `category_id`, `subcategory_id`, `assigned_team_id`, `assigned_agent_id`, `customer_id`, `business_unit`, `region`, `channel`, `status`, `sla_target_hours`, `first_response_minutes`, `resolution_minutes`, `reopened_count`, `escalation_count`, `satisfaction_score`, `short_description`, `source_system`, and `generated_batch_id`.
 
 `resolved_at`, `closed_at`, `resolution_minutes`, and `satisfaction_score` are null for unresolved tickets. Priorities are `P1`–`P4`; statuses are `new`, `assigned`, `in_progress`, `resolved`, and `closed`.
+
+Every status-history lifecycle starts `new → assigned → in_progress`; resolved tickets append `resolved`, and closed tickets append `closed`. Event sequences begin at 1, are continuous, use non-decreasing timestamps, and end at the ticket's current status. `in_progress_at` is explicit rather than inferred from final `updated_at`.
 
 ## Intentional defects
 

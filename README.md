@@ -28,13 +28,15 @@ Python 3.12, PostgreSQL, SQL, Docker Compose, dbt Core, GitHub Actions, Snowflak
 
 ## Current status
 
-Phases 0 and 1 are implemented. Phase 1 adds deterministic synthetic service-management source data, JSON/CSV/Snappy Parquet writers, a manifest, independent validation, a small committed sample, and explicit separate defect examples. PostgreSQL business tables, dbt models, cloud resources, Airflow, and Power BI artifacts are not implemented.
+Phases 0 and 1 are implemented. Phase 2 is in review: it adds a local PostgreSQL raw layer,
+idempotent typed-Parquet loading, database validation, analytics views, and executable SQL analysis.
+dbt models, cloud resources, Airflow, and Power BI artifacts are not implemented.
 
 | Phase | Scope | Status |
 | --- | --- | --- |
 | 0 | Project foundation | Complete |
 | 1 | Synthetic data generation and Parquet | Complete |
-| 2 | PostgreSQL and SQL | Not started |
+| 2 | PostgreSQL and SQL | In review |
 | 3 | ETL, ELT, and data quality | Not started |
 | 4 | dbt | Not started |
 | 5 | CI/CD | Not started |

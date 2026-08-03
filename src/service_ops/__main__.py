@@ -9,6 +9,7 @@ from collections.abc import Sequence
 from datetime import date
 from pathlib import Path
 
+from service_ops import database
 from service_ops.generation.config import DEFAULT_FORMATS, GenerationConfig
 from service_ops.generation.generator import generate_dataset
 from service_ops.generation.io import read_committed_sample, write_dataset
@@ -78,7 +79,38 @@ def build_parser() -> argparse.ArgumentParser:
         "validate-sample", help="validate the deterministic sample configuration"
     )
     validate.set_defaults(handler=_validate_sample)
+    database_parser = commands.add_parser("database", help="Phase 2 local PostgreSQL commands")
+    database_commands = database_parser.add_subparsers(dest="database_command", required=True)
+    for name in ("initialise", "load-sample", "validate", "query-summary"):
+        command = database_commands.add_parser(name)
+        command.set_defaults(handler=_database)
+    reset = database_commands.add_parser("reset")
+    reset.add_argument("--force", action="store_true")
+    reset.set_defaults(handler=_database)
     return parser
+
+
+def _database(args: argparse.Namespace) -> int:
+    """Run a Phase 2 local database command."""
+    if args.database_command == "reset" and not args.force:
+        raise ValueError("database reset requires --force")
+    with database.connection() as conn:
+        if args.database_command == "initialise":
+            database.initialise(conn)
+            result: object = {"result": "initialised"}
+        elif args.database_command == "load-sample":
+            result = database.load_sample(conn)
+        elif args.database_command == "reset":
+            with conn.cursor() as cursor:
+                cursor.execute((database.DDL / "999_reset.sql").read_text(encoding="utf-8"))
+                conn.commit()
+            result = {"result": "reset"}
+        elif args.database_command == "validate":
+            result = database.run_validation(conn)
+        else:
+            result = database.validate_database(conn)
+    print(json.dumps(result, indent=2, default=str))
+    return 0
 
 
 def main(argv: Sequence[str] | None = None) -> int:

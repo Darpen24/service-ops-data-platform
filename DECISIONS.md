@@ -77,3 +77,15 @@
 **Decision:** Write each generated dataset to readable JSON/CSV and Snappy-compressed Parquet, with a manifest checksum.
 
 **Rationale:** JSON and CSV make source inspection and simple interchange easy; Parquet provides the columnar, compressed format needed by later analytical workflows. The manifest captures reproducibility and file inventory without committing larger generated output.
+
+## ADR-014: Load committed typed Parquet into PostgreSQL raw tables
+
+**Decision:** Phase 2 reads the committed typed Parquet sample and inserts it transactionally into source-shaped PostgreSQL tables.
+
+**Rationale:** This keeps file typing and reproducibility checks at the boundary, preserves source lineage, and makes reruns safe through stable keys and conflict-safe inserts. dbt transformations remain deliberately deferred to Phase 4.
+
+## ADR-015: Use database constraints plus independent SQL validation
+
+**Decision:** Enforce row-local rules with PostgreSQL constraints and query cross-row business rules in a separate validation suite.
+
+**Rationale:** Foreign keys and check constraints reject invalid writes immediately. Rules such as the assigned agent belonging to the assigned team and status-history transitions span rows, so explicit validation queries make them visible and testable.

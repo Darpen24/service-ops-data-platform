@@ -14,4 +14,6 @@ Before changing this repository, read `PLANS.md`, `DECISIONS.md`, and `IMPLEMENT
 
 ## Current phase boundary
 
-Phase 1 may implement deterministic synthetic source data and Parquet only. Do not add PostgreSQL business tables, SQL analytics, ETL/ELT, dbt, CI/CD, cloud infrastructure, Airflow, or Power BI artifacts until their planned phases.
+Phase 2 may implement the local PostgreSQL schemas, sample loader, SQL validation, analytics views,
+and SQL learning material. Do not add Phase 3 ETL/ELT pipelines, dbt, CI/CD, cloud infrastructure,
+Airflow, or Power BI artifacts.

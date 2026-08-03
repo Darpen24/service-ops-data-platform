@@ -106,6 +106,89 @@ See ADR-012 and ADR-013. The sample models realistic but deliberately compact su
 
 Review Phase 1 and begin PostgreSQL business schemas only in Phase 2 after approval.
 
+## 2026-08-03 — Phase 2: PostgreSQL and SQL
+
+### Completed work
+
+- Created `raw`, `staging`, `analytics`, and `audit` schemas; source-shaped raw tables; audit
+  load tracking; keys, references, lifecycle/status/value checks; and targeted indexes.
+- Added transactional, typed-Parquet loading from the committed Phase 1 sample. It validates the
+  manifest and source data, loads parents before children, and is idempotent through stable keys
+  and `ON CONFLICT DO NOTHING`.
+- Added analytical dimensions/facts as views, twenty executable business SQL questions, and SQL
+  validation for relational, lifecycle, SLA, history, and cross-row agent/team rules.
+- Added PostgreSQL integration tests for schema/view creation, full and repeat load counts,
+  idempotency, constraints, lifecycle ordering, final status, checksum rejection, cross-row
+  validation, controlled average/median calculation, and guarded reset behaviour.
+- Added SQLFluff configuration plus Phase 2 architecture, data-dictionary, learning, and LinkedIn
+  draft documentation. Updated the Phase boundary, delivery plan, decisions, and README.
+
+### Files created or modified
+
+- Created `.sqlfluff`, `src/service_ops/database.py`, `sql/ddl/`, `sql/analysis/`,
+  `sql/validation/`, `tests/integration/test_postgresql.py`,
+  `docs/architecture/phase-02-postgresql.md`,
+  `docs/data_dictionary/phase-02-postgresql.md`,
+  `docs/learning/phase-02-postgresql-sql.md`, `docs/learning/phase-02-sql.md`, and
+  `docs/linkedin/phase-02-postgresql-sql.md`.
+- Modified `pyproject.toml`, `src/service_ops/__main__.py`, `AGENTS.md`, `PLANS.md`,
+  `DECISIONS.md`, `README.md`, and this log.
+
+### Final executed validation — 2026-08-03
+
+- Python 3.12.13 container CLI import smoke: `python -m service_ops --help` passed.
+- `pytest`: `17 passed in 2.91s`.
+- `pytest --cov=service_ops --cov-report=term-missing`: `17 passed in 4.38s`; total coverage
+  `85%` (471 statements, 61 missed, 154 branches, 25 partial branches).
+- `ruff format --check .`: `34 files already formatted`.
+- `ruff check .`: `All checks passed!`.
+- `mypy src`: `Success: no issues found in 9 source files`.
+- `sqlfluff lint sql/` with PostgreSQL dialect: `All Finished!` (exit code 0).
+- `docker compose --env-file .env.example config`: passed.
+- PostgreSQL lifecycle: `docker compose --env-file .env.example up -d --wait` reached healthy;
+  `pg_isready` returned `accepting connections`; authenticated `SELECT 1 AS connection_ok` returned
+  one row; `docker compose --env-file .env.example down` passed.
+- `database initialise`: passed. First `database load-sample` inserted 4 teams, 12 agents,
+  4 customers, 4 categories, 8 subcategories, 4 SLA rules, 25 tickets, and 110 history events.
+  The immediate repeat inserted zero rows and reported all those rows as existing.
+- `database validate`: passed with zero violations in all 16 checks. `database query-summary`
+  returned the expected counts above. The committed sample validator passed and matched checksum
+  `13563ac43159119f0ada365c208b3585aed69ebcbec919cee5a90c30dce2d683`.
+- All 20 statements in `sql/analysis/service_operations.sql` executed through PostgreSQL `psql`
+  successfully.
+- `EXPLAIN (ANALYZE, BUFFERS)` for the grouped open-backlog query passed. On the 25-ticket sample,
+  PostgreSQL selected a sequential scan (`Execution Time: 0.136 ms`), which is expected at this
+  small volume despite the supporting indexes.
+
+### Failed or blocked checks
+
+- Two earlier combined PowerShell/Docker convenience commands failed because PowerShell removed
+  nested Python quoting (`SyntaxError`/`NameError`) before their intended smoke fragment ran. They
+  did not change repository or database state; the equivalent final checks above were run
+  independently and passed.
+- Native host Python remains 3.14 rather than the required 3.12. All Python validation therefore
+  ran in the official Python 3.12.13 container. No Phase 2 check is otherwise blocked.
+
+### Decisions, limitations, and next step
+
+- See ADR-014 and ADR-015. The committed sample is intentionally tiny, so `EXPLAIN` may choose a
+  sequential scan even where an index exists; query-plan claims must be reassessed on realistic
+  volume. `staging` is created but intentionally unused until Phase 3, and dbt is intentionally
+  deferred to Phase 4.
+- Recommended next step: review the Phase 2 draft pull request. Begin Phase 3 only after Phase 2
+  is accepted and merged.
+
+### Phase 2 acceptance review
+
+| Criterion | Result | Evidence |
+| --- | --- | --- |
+| Schemas, typed tables, constraints, audit and indexes | Pass | `sql/ddl/` and PostgreSQL integration tests |
+| Safe, idempotent committed-Parquet load | Pass | loader tests; first/repeat load results |
+| Analytics views and twenty business questions | Pass | `004_analytics_views.sql`; 20 statements executed |
+| SQL and Python validation | Pass | zero database violations; 17 tests; Ruff, mypy, SQLFluff |
+| Documentation and learning material | Pass | Phase 2 docs, dictionary, architecture, README, ADRs |
+| Later phases avoided | Pass | no Phase 3 ETL/ELT, dbt, cloud, Airflow, or Power BI implementation |
+
 ### Phase 1 lifecycle correction — 2026-08-03
 
 - Replaced history's final `updated_at` use with explicit `in_progress_at` and regenerated the committed sample.

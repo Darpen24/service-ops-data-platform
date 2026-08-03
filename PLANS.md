@@ -6,7 +6,7 @@ The phase order below follows `PROJECT_SPEC.md`. Each phase is independently rev
 | --- | --- | --- | --- | --- |
 | 0 | Foundation: repository design, src layout, dependency isolation, Docker Compose | Tooling, documentation, PostgreSQL health check, templates; smoke, test, lint, types, Compose | Explains reproducible local delivery | Complete; native Python 3.12 installation remains a workstation prerequisite |
 | 1 | Deterministic synthetic service-management data and Parquet | JSON/CSV/Parquet outputs, config, manifest, data dictionary, generation tests | Python, modelling realistic source behaviour | Complete |
-| 2 | PostgreSQL and SQL | Schemas, idempotent loading, audit/quarantine, analytical SQL and integration tests | SQL, transactions, warehouse design | Not started |
+| 2 | PostgreSQL and SQL | Schemas, idempotent loading, audit, analytical SQL and integration tests | SQL, transactions, warehouse design | In review; implementation and Docker validation complete |
 | 3 | ETL, ELT, and data quality | Comparable ETL/ELT paths, CLI, watermarks, retry/recovery tests | Pipeline design and quality engineering | Not started |
 | 4 | dbt | Postgres models, tests, docs, snapshots, marts | ELT, lineage, dimensional modelling | Not started |
 | 5 | CI/CD | GitHub Actions quality gates and isolated PostgreSQL validation | Automation and release discipline | Not started |

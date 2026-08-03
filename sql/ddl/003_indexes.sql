@@ -1,0 +1,10 @@
+CREATE INDEX IF NOT EXISTS ix_agents_team ON raw.agents (team_id);
+CREATE INDEX IF NOT EXISTS ix_subcategories_category ON raw.subcategories (category_id);
+CREATE INDEX IF NOT EXISTS ix_tickets_created_at ON raw.tickets (created_at);
+CREATE INDEX IF NOT EXISTS ix_tickets_resolved_at ON raw.tickets (resolved_at);
+CREATE INDEX IF NOT EXISTS ix_tickets_status ON raw.tickets (status);
+CREATE INDEX IF NOT EXISTS ix_tickets_priority ON raw.tickets (priority);
+CREATE INDEX IF NOT EXISTS ix_tickets_team ON raw.tickets (assigned_team_id);
+CREATE INDEX IF NOT EXISTS ix_tickets_category ON raw.tickets (category_id);
+CREATE INDEX IF NOT EXISTS ix_tickets_batch ON raw.tickets (generated_batch_id);
+CREATE INDEX IF NOT EXISTS ix_history_ticket ON raw.ticket_status_history (ticket_id);

@@ -252,6 +252,13 @@ Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was
 - Workflow YAML was reviewed locally. Remote GitHub Actions execution is pending after push and is
   not claimed as passed. Docker Desktop remains unavailable for local service-container validation.
 
+## 2026-08-09 — Phase 6: optional Snowflake adapter
+
+- Added credential-free Snowflake SQL and dbt profile examples covering roles/grants, a small
+  auto-suspending warehouse, file format/stage, COPY guidance, VARIANT, stream, and suspended task.
+- No Snowflake credentials were available. No Snowflake SQL, COPY, task, Time Travel, clone, or
+  cloud resource operation was executed or claimed as executed.
+
 ### Phase 1 lifecycle correction — 2026-08-03
 
 - Replaced history's final `updated_at` use with explicit `in_progress_at` and regenerated the committed sample.

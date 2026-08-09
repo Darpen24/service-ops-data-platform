@@ -1,0 +1,25 @@
+version: 2
+models:
+  - name: fct_tickets
+    description: One row per operational ticket.
+    columns:
+      - name: ticket_id
+        tests: [not_null, unique]
+      - name: priority
+        tests:
+          - accepted_values:
+              arguments: {values: [P1, P2, P3, P4]}
+  - name: fct_ticket_status_events
+    description: One row per ticket lifecycle event.
+    columns:
+      - name: status_event_id
+        tests: [not_null, unique]
+      - name: ticket_id
+        tests:
+          - relationships:
+              arguments: {to: ref('fct_tickets'), field: ticket_id}
+  - name: mart_service_operations_daily
+    description: One row per operational activity date.
+    columns:
+      - name: activity_date
+        tests: [not_null, unique]

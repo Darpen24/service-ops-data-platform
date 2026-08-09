@@ -35,5 +35,9 @@ Thumbs.db
 # dbt and Power BI generated outputs
 dbt/target/
 dbt/logs/
+dbt/**/target/
+dbt/**/logs/
+dbt/service_ops/profiles.yml
+dbt/**/.user.yml
 powerbi/**/bin/
 powerbi/**/obj/

@@ -219,6 +219,26 @@ Review Phase 1 and begin PostgreSQL business schemas only in Phase 2 after appro
 
 Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was added here.
 
+## 2026-08-09 — Phase 4: dbt transformations and analytics marts
+
+### Completed work
+
+- Added a dbt-postgres project with sources/freshness, staging, intermediate lifecycle/SLA/team
+  models, dimensions, facts, daily/team/SLA/category marts, a snapshot, macro, tests, and exposure.
+- Kept dbt outputs in `dbt_analytics` to coexist with Phase 2's `analytics` views.
+
+### Commands and actual results
+
+- Installed optional `dbt-postgres`; `dbt --version` reported Core 1.12.0 and postgres 1.11.0.
+- `dbt parse --no-partial-parse --project-dir dbt/service_ops --profiles-dir dbt/service_ops`
+  passed.
+
+### Blocked validation
+
+- `dbt debug`, seed, snapshot, build, test, and docs generation require the local PostgreSQL
+  service. Docker Desktop remains unavailable (`//./pipe/docker_engine` missing), so none of those
+  commands were represented as successful.
+
 ### Phase 1 lifecycle correction — 2026-08-03
 
 - Replaced history's final `updated_at` use with explicit `in_progress_at` and regenerated the committed sample.

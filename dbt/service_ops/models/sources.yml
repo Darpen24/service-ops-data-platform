@@ -1,0 +1,23 @@
+version: 2
+sources:
+  - name: raw
+    schema: raw
+    freshness:
+      warn_after: {count: 365, period: day}
+    tables:
+      - name: teams
+        loaded_at_field: loaded_at
+      - name: agents
+        loaded_at_field: loaded_at
+      - name: customers
+        loaded_at_field: loaded_at
+      - name: categories
+        loaded_at_field: loaded_at
+      - name: subcategories
+        loaded_at_field: loaded_at
+      - name: sla_rules
+        loaded_at_field: loaded_at
+      - name: tickets
+        loaded_at_field: loaded_at
+      - name: ticket_status_history
+        loaded_at_field: changed_at

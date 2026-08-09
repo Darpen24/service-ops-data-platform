@@ -14,6 +14,6 @@ Before changing this repository, read `PLANS.md`, `DECISIONS.md`, and `IMPLEMENT
 
 ## Current phase boundary
 
-Phase 3 may implement local ETL/ELT ingestion, audit, watermark, retry, and quarantine behaviour.
-Do not add dbt models, CI/CD, cloud infrastructure, Airflow, or Power BI artifacts until their
-planned phases.
+Phase 4 may implement dbt transformations and documentation against the existing PostgreSQL
+raw/staging contract. Do not add CI/CD, cloud infrastructure, Airflow, or Power BI artifacts until
+their planned phases.

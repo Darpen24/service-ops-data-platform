@@ -1,0 +1,63 @@
+name: quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  python-and-sql:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16.4-alpine
+        env:
+          POSTGRES_DB: service_ops
+          POSTGRES_USER: service_ops_app
+          POSTGRES_PASSWORD: change-me-local-only
+        options: >-
+          --health-cmd "pg_isready -U service_ops_app -d service_ops"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+        ports: [5432:5432]
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: service_ops
+      POSTGRES_USER: service_ops_app
+      POSTGRES_PASSWORD: change-me-local-only
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -e '.[dev,dbt]'
+      - run: python -m ruff format --check .
+      - run: python -m ruff check .
+      - run: python -m mypy src
+      - run: python -m pytest --cov=service_ops --cov-report=xml
+      - run: python -m sqlfluff lint sql/
+      - run: docker compose --env-file .env.example config
+      - run: python -m service_ops database initialise
+      - run: python -m service_ops database load-sample
+      - run: cp dbt/service_ops/profiles.yml.example dbt/service_ops/profiles.yml
+      - run: dbt parse --project-dir dbt/service_ops --profiles-dir dbt/service_ops
+      - run: dbt build --project-dir dbt/service_ops --profiles-dir dbt/service_ops
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.xml
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

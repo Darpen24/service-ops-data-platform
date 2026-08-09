@@ -239,6 +239,19 @@ Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was
   service. Docker Desktop remains unavailable (`//./pipe/docker_engine` missing), so none of those
   commands were represented as successful.
 
+## 2026-08-09 — Phase 5: CI/CD
+
+### Completed work
+
+- Added a GitHub Actions quality workflow for Python, PostgreSQL-backed integration, SQLFluff,
+  Compose, dbt parse/build, coverage artifact upload, and Gitleaks secret scanning.
+- Kept workflow permissions least-privilege and did not add Terraform before Phase 8.
+
+### Validation and limitation
+
+- Workflow YAML was reviewed locally. Remote GitHub Actions execution is pending after push and is
+  not claimed as passed. Docker Desktop remains unavailable for local service-container validation.
+
 ### Phase 1 lifecycle correction — 2026-08-03
 
 - Replaced history's final `updated_at` use with explicit `in_progress_at` and regenerated the committed sample.

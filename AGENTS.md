@@ -14,6 +14,5 @@ Before changing this repository, read `PLANS.md`, `DECISIONS.md`, and `IMPLEMENT
 
 ## Current phase boundary
 
-Phase 4 may implement dbt transformations and documentation against the existing PostgreSQL
-raw/staging contract. Do not add CI/CD, cloud infrastructure, Airflow, or Power BI artifacts until
-their planned phases.
+Phase 5 may implement CI/CD quality gates for completed local capabilities. Do not add cloud
+infrastructure, Airflow, or Power BI artifacts until their planned phases.

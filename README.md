@@ -28,16 +28,16 @@ Python 3.12, PostgreSQL, SQL, Docker Compose, dbt Core, GitHub Actions, Snowflak
 
 ## Current status
 
-Phases 0 and 1 are implemented. Phase 2 is in review: it adds a local PostgreSQL raw layer,
-idempotent typed-Parquet loading, database validation, analytics views, and executable SQL analysis.
-dbt models, cloud resources, Airflow, and Power BI artifacts are not implemented.
+Phases 0–2 are complete and merged. Phase 3 is implemented and under review: it adds recoverable,
+audited ELT ingestion with idempotency, watermarking, and quarantine handling. dbt models, cloud
+resources, Airflow, and Power BI artifacts are not implemented.
 
 | Phase | Scope | Status |
 | --- | --- | --- |
 | 0 | Project foundation | Complete |
 | 1 | Synthetic data generation and Parquet | Complete |
-| 2 | PostgreSQL and SQL | In review |
-| 3 | ETL, ELT, and data quality | Not started |
+| 2 | PostgreSQL and SQL | Complete |
+| 3 | ETL, ELT, and data quality | Implemented; in review |
 | 4 | dbt | Not started |
 | 5 | CI/CD | Not started |
 | 6 | Snowflake | Not started |
@@ -106,13 +106,25 @@ python -m service_ops validate-sample
 
 The generator emits teams, agents, customers, categories, subcategories, SLA rules, tickets, ticket status history, and `manifest.json` in JSON, CSV, and Snappy Parquet. See `docs/data_dictionary/phase-01-source-data.md` for relationships and fields.
 
+## Phase 3 pipeline
+
+```bash
+python -m service_ops database initialise
+python -m service_ops pipeline run-pipeline
+python -m service_ops pipeline show-status
+```
+
+The pipeline stages valid typed-Parquet tickets, tracks an audit run and source watermark, and
+quarantines malformed ticket records without advancing a failed record's watermark. Phase 4 will
+provide the canonical dbt transformations after this raw/staging contract.
+
 ## Cost strategy
 
 Phase 0 uses only local, open-source tooling. Future cloud and paid services remain optional, are documented separately, and will never be provisioned without explicit approval.
 
 ## Known limitations
 
-- No PostgreSQL business schema, ingestion, transformations, analytics, CI workflow, or dashboard is implemented yet.
+- dbt transformations, CI workflow, Snowflake, Databricks, Terraform, and dashboard work are not yet implemented.
 - Snowflake, Databricks, and Power BI are not yet implemented.
 - The Compose service uses a local-development password from `.env`; production secret management is intentionally out of scope for Phase 0.
 - This workstation does not have a native Python 3.12 interpreter; Phase 0 Python checks were executed successfully in an isolated Python 3.12 container.

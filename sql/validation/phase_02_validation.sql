@@ -77,19 +77,19 @@ SELECT
 count(*)
 FROM (SELECT
 ticket_id,
-sequence,
+"sequence",
 changed_at,
-lag(sequence) OVER w AS previous_sequence,
+lag("sequence") OVER w AS previous_sequence,
 lag(changed_at) OVER w AS previous_time
-FROM raw.ticket_status_history WINDOW w AS (PARTITION BY ticket_id ORDER BY sequence)) AS h
-WHERE sequence <> coalesce(previous_sequence, 0) + 1 OR changed_at < previous_time;
+FROM raw.ticket_status_history WINDOW w AS (PARTITION BY ticket_id ORDER BY "sequence")) AS h
+WHERE "sequence" <> coalesce(previous_sequence, 0) + 1 OR changed_at < previous_time;
 SELECT
     'invalid_history_transitions',
     count(*)
 FROM (
     SELECT
         status,
-        lag(status) OVER (PARTITION BY ticket_id ORDER BY sequence) AS previous_status
+        lag(status) OVER (PARTITION BY ticket_id ORDER BY "sequence") AS previous_status
     FROM raw.ticket_status_history
 ) AS h
 WHERE (previous_status IS NULL AND status <> 'new')
@@ -107,7 +107,7 @@ INNER JOIN (
         ticket_id,
         status
     FROM raw.ticket_status_history
-    ORDER BY ticket_id, sequence DESC
+    ORDER BY ticket_id, "sequence" DESC
 ) AS h ON t.ticket_id = h.ticket_id
 WHERE t.status <> h.status;
 SELECT

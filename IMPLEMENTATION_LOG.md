@@ -189,6 +189,36 @@ Review Phase 1 and begin PostgreSQL business schemas only in Phase 2 after appro
 | Documentation and learning material | Pass | Phase 2 docs, dictionary, architecture, README, ADRs |
 | Later phases avoided | Pass | no Phase 3 ETL/ELT, dbt, cloud, Airflow, or Power BI implementation |
 
+## 2026-08-09 — Phase 3: ETL, ELT, and data quality
+
+### Completed work
+
+- Corrected Phase 2 to complete/merged and set the active boundary to Phase 3.
+- Added audited, watermark-driven typed-Parquet ticket staging, deterministic record checksums,
+  partial-run quarantine, transaction rollback handling, and operational CLI commands.
+- Added integration coverage for repeat batches, watermark stability, quarantine, and corrected
+  late-arriving records. See `docs/learning/phase-03-etl-elt.md` and ADR-016/017.
+
+### Commands and actual results
+
+- Native Python 3.12.10: `ruff format --check .` — `38 files already formatted`.
+- `ruff check .` — `All checks passed!`.
+- `mypy src` — `Success: no issues found in 11 source files`.
+- `pytest` — `14 passed, 5 skipped, 1 warning in 1.22s`. The warning is an upstream
+  `dateutil` deprecation warning. PostgreSQL integration tests were skipped because no integration
+  environment was configured.
+
+### Blocked validation and limitation
+
+- `docker compose` and Docker-based PostgreSQL validation were blocked because Docker Desktop was
+  not running: `open //./pipe/docker_engine: The system cannot find the file specified.` No
+  PostgreSQL pipeline integration result is claimed for this run. Start Docker Desktop and rerun
+  `pytest` with `POSTGRES_HOST` configured to exercise the five skipped integration tests.
+
+### Next phase
+
+Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was added here.
+
 ### Phase 1 lifecycle correction — 2026-08-03
 
 - Replaced history's final `updated_at` use with explicit `in_progress_at` and regenerated the committed sample.

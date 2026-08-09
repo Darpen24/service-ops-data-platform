@@ -49,7 +49,7 @@ def test_schema_load_idempotency_and_views(conn: psycopg.Connection[tuple[object
             cursor.execute(
                 "SELECT count(*) FROM analytics.fct_ticket_status_events h "
                 "JOIN raw.tickets t USING (ticket_id) "
-                "WHERE h.sequence = (SELECT max(sequence) FROM raw.ticket_status_history "
+                'WHERE h."sequence" = (SELECT max("sequence") FROM raw.ticket_status_history '
                 "WHERE ticket_id = h.ticket_id) AND h.status = t.status"
             ).fetchone()[0]
             == 25

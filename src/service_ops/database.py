@@ -40,9 +40,9 @@ def connection() -> psycopg.Connection[Any]:
 
 
 def initialise(conn: psycopg.Connection[Any]) -> None:
-    """Execute ordered repeatable Phase 2 DDL scripts."""
+    """Execute ordered repeatable local PostgreSQL DDL scripts."""
     with conn.cursor() as cursor:
-        for path in sorted(DDL.glob("00[1-4]_*.sql")):
+        for path in sorted(DDL.glob("00[1-9]_*.sql")):
             cursor.execute(path.read_text(encoding="utf-8"))
     conn.commit()
 

@@ -87,6 +87,6 @@ CREATE TABLE IF NOT EXISTS raw.ticket_status_history (
     ticket_id TEXT NOT NULL REFERENCES raw.tickets (ticket_id),
     status TEXT NOT NULL CHECK (status IN ('new', 'assigned', 'in_progress', 'resolved', 'closed')),
     changed_at TIMESTAMPTZ NOT NULL,
-    sequence INTEGER NOT NULL CHECK (sequence > 0),
-    UNIQUE (ticket_id, sequence)
+    "sequence" INTEGER NOT NULL CHECK ("sequence" > 0),
+    UNIQUE (ticket_id, "sequence")
 );

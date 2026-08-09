@@ -266,6 +266,18 @@ Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was
 - Local PySpark/Delta and Databricks deployment were not run because no runtime or credentials are
   available. The pure Python contract is covered by the ordinary test suite.
 
+## 2026-08-09 — Phase 8: Terraform
+
+- Added reusable Snowflake and Databricks Terraform modules, an opt-in development environment,
+  typed/validated variables, sensitive token handling, state/secret ignores, safe usage guidance,
+  and CI fmt/init/validate steps.
+- Terraform is not installed on this workstation, so `fmt`, `init -backend=false`, and `validate`
+  could not be run locally. `terraform plan` is skipped because provider credentials are absent.
+  `terraform apply` and `terraform destroy` were not run.
+- Final local checks: `ruff format --check .` — `48 files already formatted`; `ruff check .` —
+  `All checks passed!`; `mypy src` — `Success: no issues found in 13 source files`; `sqlfluff
+  lint sql/` — passed; `pytest` — `15 passed, 5 skipped in 1.24s`; YAML static validation passed.
+
 ### Phase 1 lifecycle correction — 2026-08-03
 
 - Replaced history's final `updated_at` use with explicit `in_progress_at` and regenerated the committed sample.

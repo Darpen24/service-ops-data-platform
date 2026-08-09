@@ -40,5 +40,20 @@ dbt/**/logs/
 dbt/service_ops/profiles.yml
 dbt/**/.user.yml
 logs/
+
+# Terraform state, plans, and machine-local overrides
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+terraform.tfvars
+*.auto.tfvars
+!*.tfvars.example
 powerbi/**/bin/
 powerbi/**/obj/

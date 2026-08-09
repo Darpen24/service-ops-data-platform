@@ -259,6 +259,13 @@ Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was
 - No Snowflake credentials were available. No Snowflake SQL, COPY, task, Time Travel, clone, or
   cloud resource operation was executed or claimed as executed.
 
+## 2026-08-09 — Phase 7: Databricks and Delta Lake
+
+- Added optional Bronze/Silver/Gold contracts, a Databricks notebook design, and an opt-in small
+  job resource with an auto-terminating cluster definition.
+- Local PySpark/Delta and Databricks deployment were not run because no runtime or credentials are
+  available. The pure Python contract is covered by the ordinary test suite.
+
 ### Phase 1 lifecycle correction — 2026-08-03
 
 - Replaced history's final `updated_at` use with explicit `in_progress_at` and regenerated the committed sample.

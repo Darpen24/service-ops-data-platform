@@ -8,7 +8,7 @@ The phase order below follows `PROJECT_SPEC.md`. Each phase is independently rev
 | 1 | Deterministic synthetic service-management data and Parquet | JSON/CSV/Parquet outputs, config, manifest, data dictionary, generation tests | Python, modelling realistic source behaviour | Complete |
 | 2 | PostgreSQL and SQL | Schemas, idempotent loading, audit, analytical SQL and integration tests | SQL, transactions, warehouse design | Complete; merged into main |
 | 3 | ETL, ELT, and data quality | Comparable ETL/ELT paths, CLI, watermarks, retry/recovery tests | Pipeline design and quality engineering | Implemented; in review |
-| 4 | dbt | Postgres models, tests, docs, snapshots, marts | ELT, lineage, dimensional modelling | Not started |
+| 4 | dbt | Postgres models, tests, docs, snapshots, marts | ELT, lineage, dimensional modelling | Implemented; in review |
 | 5 | CI/CD | GitHub Actions quality gates and isolated PostgreSQL validation | Automation and release discipline | Not started |
 | 6 | Snowflake | Optional adapter, scripts, roles/grants, dbt target, credential-skipping tests | Cloud warehouse architecture and cost control | Not started; credentials/approval may block execution |
 | 7 | Databricks, PySpark, and Delta Lake | Bronze/Silver/Gold-compatible modules and notebooks | Spark, lakehouse, Delta semantics | Not started; local tooling or credentials may block execution |

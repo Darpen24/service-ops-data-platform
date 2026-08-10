@@ -219,6 +219,7 @@ Review Phase 1 and begin PostgreSQL business schemas only in Phase 2 after appro
 
 Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was added here.
 
+feature/phase-04-dbt
 ## 2026-08-09 — Phase 4: dbt transformations and analytics marts
 
 ### Completed work
@@ -238,6 +239,8 @@ Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was
 - `dbt debug`, seed, snapshot, build, test, and docs generation require the local PostgreSQL
   service. Docker Desktop remains unavailable (`//./pipe/docker_engine` missing), so none of those
   commands were represented as successful.
+
+main
 ### Timestamp contract correction — 2026-08-10
 
 - The committed Parquet reader returned Phase 1 ISO-8601 timestamp strings in the live Python

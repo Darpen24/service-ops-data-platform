@@ -5,6 +5,12 @@ the typed committed Parquet contract, checks per-ticket source validity, stages 
 records its run in PostgreSQL. Invalid records are written to `audit.quarantine_records` with a
 rule, reason, record identifier, batch, and JSON-safe payload.
 
+Phase 1 source files intentionally use ISO-8601 text timestamps for portable JSON/CSV/Parquet
+round trips. `service_ops.ingestion.pipeline.parse_timestamp` is the Phase 3 boundary contract:
+it accepts those strings or datetimes, rejects timezone-naive or malformed values, and supplies
+UTC-aware datetimes to lifecycle checks, watermarks, database inserts, checksum canonicalisation,
+and late-arriving record handling.
+
 ## ETL compared with ELT
 
 The small ETL teaching path is the Python validation and record preparation that happens before

@@ -219,6 +219,7 @@ Review Phase 1 and begin PostgreSQL business schemas only in Phase 2 after appro
 
 Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was added here.
 
+feature/phase-04-dbt
 ## 2026-08-09 — Phase 4: dbt transformations and analytics marts
 
 ### Completed work
@@ -239,6 +240,7 @@ Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was
   service. Docker Desktop remains unavailable (`//./pipe/docker_engine` missing), so none of those
   commands were represented as successful.
 
+feature/phase-05-cicd
 ## 2026-08-09 — Phase 5: CI/CD
 
 ### Completed work
@@ -259,6 +261,9 @@ Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was
   `fetch-depth: 0`, retaining Gitleaks and its default findings policy unchanged. GitHub Actions
   run `31384546870` passed `secret-scan`, `python-and-sql`, and `terraform` after the correction.
 
+feature/phase-07-databricks-delta
+feature/phase-06-snowflake
+ main
 ## 2026-08-09 — Phase 6: optional Snowflake adapter
 
 - Added credential-free Snowflake SQL and dbt profile examples covering roles/grants, a small
@@ -266,12 +271,17 @@ Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was
 - No Snowflake credentials were available. No Snowflake SQL, COPY, task, Time Travel, clone, or
   cloud resource operation was executed or claimed as executed.
 
+ feature/phase-07-databricks-delta
 ## 2026-08-09 — Phase 7: Databricks and Delta Lake
 
 - Added optional Bronze/Silver/Gold contracts, a Databricks notebook design, and an opt-in small
   job resource with an auto-terminating cluster definition.
 - Local PySpark/Delta and Databricks deployment were not run because no runtime or credentials are
   available. The pure Python contract is covered by the ordinary test suite.
+main
+main
+main
+main
 ### Timestamp contract correction — 2026-08-10
 
 - The committed Parquet reader returned Phase 1 ISO-8601 timestamp strings in the live Python

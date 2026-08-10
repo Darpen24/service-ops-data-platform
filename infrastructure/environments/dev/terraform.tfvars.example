@@ -1,0 +1,6 @@
+name_prefix = "DEV"
+enable_snowflake = false
+enable_databricks = false
+snowflake_warehouse_size = "XSMALL"
+databricks_max_dbus_per_hour = 2
+# Supply sensitive provider values only through environment variables or uncommitted tfvars.

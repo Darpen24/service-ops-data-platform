@@ -14,5 +14,5 @@ Before changing this repository, read `PLANS.md`, `DECISIONS.md`, and `IMPLEMENT
 
 ## Current phase boundary
 
-Phase 7 may implement Databricks-compatible local contracts, notebooks, and deployment examples.
-Do not deploy cloud resources or add Terraform, Airflow, or Power BI artifacts early.
+Phase 8 is implemented and under review. Do not begin Phase 9 Power BI, Airflow, or any later
+phase. Never run Terraform apply or destroy.

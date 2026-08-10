@@ -28,9 +28,9 @@ Python 3.12, PostgreSQL, SQL, Docker Compose, dbt Core, GitHub Actions, Snowflak
 
 ## Current status
 
-Phases 0–2 are complete and merged. Phase 3 is implemented and under review: it adds recoverable,
-audited ELT ingestion with idempotency, watermarking, and quarantine handling. dbt models, cloud
-resources, Airflow, and Power BI artifacts are not implemented.
+Phases 0–2 are complete and merged. Phases 3–8 are implemented on a stacked review branch set:
+recoverable ELT, dbt, CI, optional Snowflake/Databricks adapters, and safe Terraform modules.
+Cloud execution, Airflow, and Power BI are not implemented.
 
 | Phase | Scope | Status |
 | --- | --- | --- |
@@ -38,11 +38,11 @@ resources, Airflow, and Power BI artifacts are not implemented.
 | 1 | Synthetic data generation and Parquet | Complete |
 | 2 | PostgreSQL and SQL | Complete |
 | 3 | ETL, ELT, and data quality | Implemented; in review |
-| 4 | dbt | Not started |
-| 5 | CI/CD | Not started |
-| 6 | Snowflake | Not started |
-| 7 | Databricks, PySpark, and Delta Lake | Not started |
-| 8 | Terraform | Not started |
+| 4 | dbt | Implemented; in review |
+| 5 | CI/CD | Implemented; remote execution pending |
+| 6 | Snowflake | Implemented; cloud execution not run |
+| 7 | Databricks, PySpark, and Delta Lake | Implemented; Spark execution not run |
+| 8 | Terraform | Implemented; in review |
 | 9 | Power BI semantic model | Not started |
 | 10 | Power BI report | Not started |
 | 11 | Orchestration and observability | Not started |

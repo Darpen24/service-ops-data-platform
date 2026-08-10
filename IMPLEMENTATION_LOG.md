@@ -219,6 +219,7 @@ Review Phase 1 and begin PostgreSQL business schemas only in Phase 2 after appro
 
 Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was added here.
 
+feature/phase-04-dbt
 ## 2026-08-09 — Phase 4: dbt transformations and analytics marts
 
 ### Completed work
@@ -239,6 +240,7 @@ Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was
   service. Docker Desktop remains unavailable (`//./pipe/docker_engine` missing), so none of those
   commands were represented as successful.
 
+feature/phase-05-cicd
 ## 2026-08-09 — Phase 5: CI/CD
 
 ### Completed work
@@ -258,6 +260,9 @@ Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was
   not resolve the historical pull-request range. The `secret-scan` checkout now uses
   `fetch-depth: 0`, retaining Gitleaks and its default findings policy unchanged. GitHub Actions
   run `31384546870` passed `secret-scan`, `python-and-sql`, and `terraform` after the correction.
+
+main
+main
 ### Timestamp contract correction — 2026-08-10
 
 - The committed Parquet reader returned Phase 1 ISO-8601 timestamp strings in the live Python

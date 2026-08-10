@@ -12,7 +12,7 @@ The phase order below follows `PROJECT_SPEC.md`. Each phase is independently rev
 | 5 | CI/CD | GitHub Actions quality gates and isolated PostgreSQL validation | Automation and release discipline | Implemented; remote execution pending |
 | 6 | Snowflake | Optional adapter, scripts, roles/grants, dbt target, credential-skipping tests | Cloud warehouse architecture and cost control | Implemented; cloud execution blocked by absent credentials |
 | 7 | Databricks, PySpark, and Delta Lake | Bronze/Silver/Gold-compatible modules and notebooks | Spark, lakehouse, Delta semantics | Implemented; Spark runtime validation pending |
-| 8 | Terraform | Reusable modules, safe plan-only workflow, validation | Infrastructure as code and least privilege | Implemented; validation blocked by missing Terraform binary |
+| 8 | Terraform | Reusable modules, safe plan-only workflow, validation | Infrastructure as code and least privilege | Implemented; in review; local fmt/init/validate complete |
 | 9 | Power BI semantic model | PBIP model, Power Query parameters, DAX, model validation | Star schemas, DAX, semantic modelling | Not started; Desktop/tool availability may block validation |
 | 10 | Power BI report | Five report pages, theme, screenshots, design review | Dashboard design and stakeholder communication | Not started; Desktop Bridge availability may block validation |
 | 11 | Orchestration and observability | Optional Airflow plus readiness/runbook documentation | Orchestration, recovery, observability | Not started |

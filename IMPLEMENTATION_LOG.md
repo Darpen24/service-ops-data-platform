@@ -271,12 +271,27 @@ Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was
 - Added reusable Snowflake and Databricks Terraform modules, an opt-in development environment,
   typed/validated variables, sensitive token handling, state/secret ignores, safe usage guidance,
   and CI fmt/init/validate steps.
-- Terraform is not installed on this workstation, so `fmt`, `init -backend=false`, and `validate`
-  could not be run locally. `terraform plan` is skipped because provider credentials are absent.
-  `terraform apply` and `terraform destroy` were not run.
+- Initial Terraform validation was blocked while Terraform was not installed. `terraform plan` is
+  skipped because provider credentials are absent. `terraform apply` and `terraform destroy` were
+  not run.
 - Final local checks: `ruff format --check .` — `48 files already formatted`; `ruff check .` —
   `All checks passed!`; `mypy src` — `Success: no issues found in 13 source files`; `sqlfluff
   lint sql/` — passed; `pytest` — `15 passed, 5 skipped in 1.24s`; YAML static validation passed.
+
+### Terraform provider correction — 2026-08-10
+
+- Declared the Snowflake and Databricks provider source addresses in the `dev` root module and in
+  each child module that uses the provider. Terraform module provider requirements are local to a
+  module and do not inherit from the repository-level configuration.
+- Terraform 1.15.8: `terraform fmt -recursive infrastructure` passed; `terraform fmt -check
+  -recursive infrastructure` passed; `terraform -chdir=infrastructure/environments/dev init
+  -backend=false` passed; and `terraform -chdir=infrastructure/environments/dev validate` passed.
+  The lock file records `snowflake-labs/snowflake v1.0.5` and `databricks/databricks v1.125.0`.
+- The registry emitted a non-blocking deprecation warning that `snowflake-labs/snowflake` has
+  moved to `snowflakedb/snowflake`; the configured source deliberately remains
+  `Snowflake-Labs/snowflake` to match the Phase 8 specification.
+- No plan, apply, or destroy command was run. The generated `.terraform/` provider directory is
+  ignored; no Terraform state files or provider binaries are tracked.
 ### Timestamp contract correction — 2026-08-10
 
 - The committed Parquet reader returned Phase 1 ISO-8601 timestamp strings in the live Python

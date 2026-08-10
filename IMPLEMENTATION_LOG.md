@@ -240,6 +240,28 @@ feature/phase-04-dbt
   service. Docker Desktop remains unavailable (`//./pipe/docker_engine` missing), so none of those
   commands were represented as successful.
 
+feature/phase-05-cicd
+## 2026-08-09 — Phase 5: CI/CD
+
+### Completed work
+
+- Added a GitHub Actions quality workflow for Python, PostgreSQL-backed integration, SQLFluff,
+  Compose, dbt parse/build, coverage artifact upload, and Gitleaks secret scanning.
+- Kept workflow permissions least-privilege and did not add Terraform before Phase 8.
+
+### Validation and limitation
+
+- Workflow YAML was reviewed locally. Remote GitHub Actions execution is pending after push and is
+  not claimed as passed. Docker Desktop remains unavailable for local service-container validation.
+
+### Secret-scan history correction — 2026-08-10
+
+- Gitleaks failed on pull request #9 without reporting a secret because its shallow checkout could
+  not resolve the historical pull-request range. The `secret-scan` checkout now uses
+  `fetch-depth: 0`, retaining Gitleaks and its default findings policy unchanged. GitHub Actions
+  run `31384546870` passed `secret-scan`, `python-and-sql`, and `terraform` after the correction.
+
+main
 main
 ### Timestamp contract correction — 2026-08-10
 

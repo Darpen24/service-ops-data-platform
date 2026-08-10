@@ -39,5 +39,6 @@ dbt/**/target/
 dbt/**/logs/
 dbt/service_ops/profiles.yml
 dbt/**/.user.yml
+logs/
 powerbi/**/bin/
 powerbi/**/obj/

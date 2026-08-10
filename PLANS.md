@@ -10,7 +10,7 @@ The phase order below follows `PROJECT_SPEC.md`. Each phase is independently rev
 | 3 | ETL, ELT, and data quality | Comparable ETL/ELT paths, CLI, watermarks, retry/recovery tests | Pipeline design and quality engineering | Implemented; in review |
 | 4 | dbt | Postgres models, tests, docs, snapshots, marts | ELT, lineage, dimensional modelling | Implemented; in review |
 | 5 | CI/CD | GitHub Actions quality gates and isolated PostgreSQL validation | Automation and release discipline | Implemented; remote execution pending |
-| 6 | Snowflake | Optional adapter, scripts, roles/grants, dbt target, credential-skipping tests | Cloud warehouse architecture and cost control | Not started; credentials/approval may block execution |
+| 6 | Snowflake | Optional adapter, scripts, roles/grants, dbt target, credential-skipping tests | Cloud warehouse architecture and cost control | Implemented; cloud execution blocked by absent credentials |
 | 7 | Databricks, PySpark, and Delta Lake | Bronze/Silver/Gold-compatible modules and notebooks | Spark, lakehouse, Delta semantics | Not started; local tooling or credentials may block execution |
 | 8 | Terraform | Reusable modules, safe plan-only workflow, validation | Infrastructure as code and least privilege | Not started; apply remains manual-approval-only |
 | 9 | Power BI semantic model | PBIP model, Power Query parameters, DAX, model validation | Star schemas, DAX, semantic modelling | Not started; Desktop/tool availability may block validation |

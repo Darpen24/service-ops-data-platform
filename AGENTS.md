@@ -14,5 +14,5 @@ Before changing this repository, read `PLANS.md`, `DECISIONS.md`, and `IMPLEMENT
 
 ## Current phase boundary
 
-Phase 5 may implement CI/CD quality gates for completed local capabilities. Do not add cloud
-infrastructure, Airflow, or Power BI artifacts until their planned phases.
+Phase 6 may implement optional Snowflake adapter scripts and credential-aware configuration. Do
+not create cloud resources, add Databricks, Terraform, Airflow, or Power BI artifacts early.

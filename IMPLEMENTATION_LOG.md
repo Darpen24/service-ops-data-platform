@@ -252,6 +252,13 @@ Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was
 - Workflow YAML was reviewed locally. Remote GitHub Actions execution is pending after push and is
   not claimed as passed. Docker Desktop remains unavailable for local service-container validation.
 
+### Secret-scan history correction — 2026-08-10
+
+- Gitleaks failed on pull request #9 without reporting a secret because its shallow checkout could
+  not resolve the historical pull-request range. The `secret-scan` checkout now uses
+  `fetch-depth: 0`, retaining Gitleaks and its default findings policy unchanged. Remote execution
+  is required to confirm the corrected job result.
+
 ## 2026-08-09 — Phase 6: optional Snowflake adapter
 
 - Added credential-free Snowflake SQL and dbt profile examples covering roles/grants, a small

@@ -14,5 +14,5 @@ Before changing this repository, read `PLANS.md`, `DECISIONS.md`, and `IMPLEMENT
 
 ## Current phase boundary
 
-Phase 6 may implement optional Snowflake adapter scripts and credential-aware configuration. Do
-not create cloud resources, add Databricks, Terraform, Airflow, or Power BI artifacts early.
+Phase 7 may implement Databricks-compatible local contracts, notebooks, and deployment examples.
+Do not deploy cloud resources or add Terraform, Airflow, or Power BI artifacts early.

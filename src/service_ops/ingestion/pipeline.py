@@ -5,8 +5,9 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+from copy import deepcopy
 from dataclasses import asdict, dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any, cast
 from uuid import UUID, uuid4
 
@@ -17,6 +18,14 @@ from service_ops.generation.generator import Dataset
 
 LOGGER = logging.getLogger(__name__)
 SOURCE_NAME = "phase-01-parquet"
+TICKET_TIMESTAMP_FIELDS = (
+    "created_at",
+    "updated_at",
+    "first_response_at",
+    "in_progress_at",
+    "resolved_at",
+    "closed_at",
+)
 
 
 @dataclass(frozen=True)
@@ -39,13 +48,66 @@ class PipelineResult:
 
 def _checksum(record: dict[str, Any]) -> str:
     return hashlib.sha256(
-        json.dumps(record, sort_keys=True, separators=(",", ":"), default=str).encode()
+        json.dumps(record, sort_keys=True, separators=(",", ":"), default=_json_default).encode()
     ).hexdigest()
+
+
+def _json_default(value: object) -> str:
+    if isinstance(value, datetime):
+        return value.astimezone(UTC).isoformat().replace("+00:00", "Z")
+    return str(value)
 
 
 def _json_payload(record: dict[str, Any]) -> dict[str, Any]:
     """Make timestamps and other typed Parquet values safe for JSONB audit storage."""
-    return cast(dict[str, Any], json.loads(json.dumps(record, default=str)))
+    return cast(dict[str, Any], json.loads(json.dumps(record, default=_json_default)))
+
+
+def parse_timestamp(value: object, field_name: str, *, nullable: bool = False) -> datetime | None:
+    """Return a UTC-aware timestamp from the Phase 1 ISO contract or a datetime input."""
+    if value is None:
+        if nullable:
+            return None
+        raise ValueError(f"{field_name} is required")
+    if isinstance(value, datetime):
+        parsed = value
+    elif isinstance(value, str):
+        try:
+            parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        except ValueError as error:
+            raise ValueError(f"{field_name} must be an ISO-8601 timestamp") from error
+    else:
+        raise ValueError(f"{field_name} must be a timestamp string or datetime")
+    if parsed.tzinfo is None:
+        raise ValueError(f"{field_name} must include a timezone")
+    return parsed.astimezone(UTC)
+
+
+def normalise_pipeline_records(records: Dataset) -> Dataset:
+    """Return a copied pipeline input with all lifecycle timestamps as UTC datetimes."""
+    normalised = deepcopy(records)
+    for ticket in normalised["tickets"]:
+        for field_name in TICKET_TIMESTAMP_FIELDS:
+            ticket[field_name] = parse_timestamp(
+                ticket.get(field_name),
+                field_name,
+                nullable=field_name in {"resolved_at", "closed_at"},
+            )
+    for event in normalised["ticket_status_history"]:
+        event["changed_at"] = parse_timestamp(event.get("changed_at"), "changed_at")
+    return normalised
+
+
+def _normalise_ticket(ticket: dict[str, Any]) -> dict[str, Any]:
+    """Normalise one ticket so bad source values can be quarantined independently."""
+    normalised = deepcopy(ticket)
+    for field_name in TICKET_TIMESTAMP_FIELDS:
+        normalised[field_name] = parse_timestamp(
+            normalised.get(field_name),
+            field_name,
+            nullable=field_name in {"resolved_at", "closed_at"},
+        )
+    return normalised
 
 
 def _ticket_error(ticket: dict[str, Any]) -> tuple[str, str] | None:
@@ -53,8 +115,8 @@ def _ticket_error(ticket: dict[str, Any]) -> tuple[str, str] | None:
         return "required_ticket_id", "ticket_id is required"
     created_at = ticket.get("created_at")
     updated_at = ticket.get("updated_at")
-    if created_at is None or updated_at is None:
-        return "required_timestamp", "created_at and updated_at are required"
+    if not isinstance(created_at, datetime) or not isinstance(updated_at, datetime):
+        return "required_timestamp", "created_at and updated_at must be UTC-aware datetimes"
     if updated_at < created_at:
         return "ticket_timestamp_order", "updated_at is earlier than created_at"
     return None
@@ -91,8 +153,14 @@ def run_records(
     _record_run_start(conn, run_id, batch_id, source_checksum, watermark_before)
     quarantined = 0
     valid_tickets: list[dict[str, Any]] = []
-    for ticket in records["tickets"]:
-        issue = _ticket_error(ticket)
+    for source_ticket in records["tickets"]:
+        issue: tuple[str, str] | None
+        try:
+            ticket = _normalise_ticket(source_ticket)
+            issue = _ticket_error(ticket)
+        except ValueError as error:
+            ticket = source_ticket
+            issue = "invalid_timestamp", str(error)
         if issue is None:
             valid_tickets.append(ticket)
             continue

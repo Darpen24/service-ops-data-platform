@@ -219,6 +219,17 @@ Review Phase 1 and begin PostgreSQL business schemas only in Phase 2 after appro
 
 Phase 4 will add dbt models to the Phase 3 raw/staging contract; no dbt code was added here.
 
+### Timestamp contract correction — 2026-08-10
+
+- The committed Parquet reader returned Phase 1 ISO-8601 timestamp strings in the live Python
+  environment. Phase 3 had incorrectly compared them directly with PostgreSQL `datetime`
+  watermarks. Added a single UTC-aware pipeline normalization boundary that accepts strings or
+  datetimes, rejects malformed/naive values, and canonicalises timestamps for checksums and JSON
+  audit payloads.
+- Live PostgreSQL validation with `POSTGRES_HOST=127.0.0.1` and port `55432`: `pytest -ra` —
+  `19 passed in 3.05s`; coverage — `19 passed in 3.87s`, total `83%`; Ruff formatting/lint and
+  mypy passed.
+
 ### Phase 1 lifecycle correction — 2026-08-03
 
 - Replaced history's final `updated_at` use with explicit `in_progress_at` and regenerated the committed sample.

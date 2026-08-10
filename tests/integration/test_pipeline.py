@@ -51,7 +51,8 @@ def test_invalid_record_is_quarantined_and_late_record_is_updated(
     conn: psycopg.Connection[tuple[object, ...]],
 ) -> None:
     """Bad timestamps are quarantined while a corrected late ticket is accepted later."""
-    records, manifest = read_committed_sample(database.SAMPLE)
+    source_records, manifest = read_committed_sample(database.SAMPLE)
+    records = pipeline.normalise_pipeline_records(source_records)
     invalid = deepcopy(records)
     invalid["tickets"][0]["updated_at"] = invalid["tickets"][0]["created_at"] - timedelta(minutes=1)
     partial = pipeline.run_records(
@@ -62,7 +63,8 @@ def test_invalid_record_is_quarantined_and_late_record_is_updated(
     assert conn.execute("SELECT count(*) FROM audit.quarantine_records").fetchone() == (1,)
 
     late = deepcopy(records)
-    late["tickets"][0]["updated_at"] = records["tickets"][0]["updated_at"] + timedelta(days=1)
+    latest_source_update = max(ticket["updated_at"] for ticket in records["tickets"])
+    late["tickets"][0]["updated_at"] = latest_source_update + timedelta(days=1)
     corrected = pipeline.run_records(
         conn, late, "pipeline-late", manifest["reproducibility_checksum"]
     )

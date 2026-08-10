@@ -14,6 +14,6 @@ Before changing this repository, read `PLANS.md`, `DECISIONS.md`, and `IMPLEMENT
 
 ## Current phase boundary
 
-Phase 2 may implement the local PostgreSQL schemas, sample loader, SQL validation, analytics views,
-and SQL learning material. Do not add Phase 3 ETL/ELT pipelines, dbt, CI/CD, cloud infrastructure,
-Airflow, or Power BI artifacts.
+Phase 3 may implement local ETL/ELT ingestion, audit, watermark, retry, and quarantine behaviour.
+Do not add dbt models, CI/CD, cloud infrastructure, Airflow, or Power BI artifacts until their
+planned phases.

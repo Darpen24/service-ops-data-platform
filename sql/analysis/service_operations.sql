@@ -112,6 +112,6 @@ FROM analytics.fct_tickets;
 
 -- 20: Duration represented by each lifecycle status
 SELECT ticket_id, status, changed_at,
-    coalesce(lead(changed_at) OVER (PARTITION BY ticket_id ORDER BY sequence), now()) - changed_at
+    coalesce(lead(changed_at) OVER (PARTITION BY ticket_id ORDER BY "sequence"), now()) - changed_at
         AS time_in_status
 FROM analytics.fct_ticket_status_events;

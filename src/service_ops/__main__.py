@@ -14,6 +14,7 @@ from service_ops.generation.config import DEFAULT_FORMATS, GenerationConfig
 from service_ops.generation.generator import generate_dataset
 from service_ops.generation.io import read_committed_sample, write_dataset
 from service_ops.generation.validation import validate_dataset
+from service_ops.ingestion import pipeline
 
 
 def _date_argument(value: str) -> date:
@@ -87,6 +88,11 @@ def build_parser() -> argparse.ArgumentParser:
     reset = database_commands.add_parser("reset")
     reset.add_argument("--force", action="store_true")
     reset.set_defaults(handler=_database)
+    pipeline_parser = commands.add_parser("pipeline", help="Phase 3 recoverable local ELT commands")
+    pipeline_commands = pipeline_parser.add_subparsers(dest="pipeline_command", required=True)
+    for name in ("ingest", "run-pipeline", "show-status"):
+        command = pipeline_commands.add_parser(name)
+        command.set_defaults(handler=_pipeline)
     return parser
 
 
@@ -109,6 +115,23 @@ def _database(args: argparse.Namespace) -> int:
             result = database.run_validation(conn)
         else:
             result = database.validate_database(conn)
+    print(json.dumps(result, indent=2, default=str))
+    return 0
+
+
+def _pipeline(args: argparse.Namespace) -> int:
+    """Run the Phase 3 audited source-ingestion path."""
+    with database.connection() as conn:
+        if args.pipeline_command == "show-status":
+            result: object = pipeline.status(conn)
+        else:
+            records, manifest = read_committed_sample(Path("data/sample/phase-01"))
+            result = pipeline.run_records(
+                conn,
+                records,
+                str(manifest["generated_batch_id"]),
+                str(manifest["reproducibility_checksum"]),
+            ).as_dict()
     print(json.dumps(result, indent=2, default=str))
     return 0
 

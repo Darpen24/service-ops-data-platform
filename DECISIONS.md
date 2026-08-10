@@ -89,3 +89,19 @@
 **Decision:** Enforce row-local rules with PostgreSQL constraints and query cross-row business rules in a separate validation suite.
 
 **Rationale:** Foreign keys and check constraints reject invalid writes immediately. Rules such as the assigned agent belonging to the assigned team and status-history transitions span rows, so explicit validation queries make them visible and testable.
+
+## ADR-016: Use stacked phase branches for independently reviewable delivery
+
+**Decision:** Phase 3 and later use stacked branches based on their preceding phase branch.
+
+**Rationale:** This supports progress without pretending that an unmerged parent phase is already in
+`main`; each pull request has one focused diff and a documented merge order.
+
+## ADR-017: Make the Phase 3 ELT boundary staging plus audit
+
+**Decision:** Keep source records in the existing raw layer and add a small staging/audit ingestion
+contract before dbt is introduced.
+
+**Rationale:** A watermark, run record, JSON-safe quarantine payload, and transactional staging
+write demonstrate recovery and observability without duplicating future dbt transformations in
+Python.
